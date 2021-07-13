@@ -27,13 +27,13 @@
     <loaded-nodes>
       <connection connection-id="39c1d988-6b79-4d09-8f07-432d972f6339">
         <schema name="pg_catalog" object-types="table, view, function" />
-        <schema name="public" object-types="table, view, function" />
+        <schema name="public" object-types="table, view, sequence, function, constraint, index, column, dataset trigger" />
       </connection>
     </loaded-nodes>
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="39c1d988-6b79-4d09-8f07-432d972f6339">
-      <console name="Connection" type="STANDARD" schema="public" session="Main"><![CDATA[select * from student;]]></console>
+      <console name="Connection" type="STANDARD" schema="public" session="Main" />
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">

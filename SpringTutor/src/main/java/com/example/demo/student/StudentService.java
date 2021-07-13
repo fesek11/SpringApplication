@@ -46,7 +46,9 @@ public class StudentService {
         if (!exist) {
             throw new IllegalStateException("The id is not existing");
         } else {
-            Student student = studentRepository.findById(id).orElseThrow(() -> new IllegalStateException("Id: " + id + " is not existing"));
+            Student student = studentRepository
+                    .findById(id)
+                    .orElseThrow(() -> new IllegalStateException("Id: " + id + " is not existing"));
             if (newName != null && newName.length() > 0) {
                 student.setName(newName);
             } else {
@@ -65,6 +67,5 @@ public class StudentService {
                 throw new IllegalStateException("Inappropriate  email");
             }
         }
-
     }
 }

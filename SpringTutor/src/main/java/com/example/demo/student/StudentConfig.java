@@ -1,6 +1,9 @@
 package com.example.demo.student;
 
+import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -19,7 +22,6 @@ public class StudentConfig {
                     "Den",
                     "dfesek1@gmail.com",
                     LocalDate.of(2005, JANUARY, 23));
-
             Student alex = new Student(
                     "Alex",
                     "alex1@gmail.com",
@@ -31,4 +33,5 @@ public class StudentConfig {
             studentRepository.saveAll(List.of(den, alex, flex));
         };
     }
+
 }

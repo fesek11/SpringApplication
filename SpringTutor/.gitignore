@@ -1,0 +1,14 @@
+HELP.md
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+
+.apt_generated
+.classpath
+.project
+.factorypath
+.settings
+.springBeans
+.idea
+*.iml
+*.iws
+*.ipr

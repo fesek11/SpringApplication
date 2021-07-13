@@ -4,7 +4,9 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.Period;
 
-@Table
+import static javax.persistence.GenerationType.SEQUENCE;
+
+@Table (name = "Student")
 @Entity
 public class Student {
     @Id
@@ -13,18 +15,35 @@ public class Student {
             sequenceName = "student_sequence",
             allocationSize = 1)
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
+            strategy = SEQUENCE,
             generator = "student_sequence")
     private Long id;
+
+    @Column(name = "name",
+            nullable = false,
+            columnDefinition = "TEXT",
+            unique = true
+    )
     private String name;
+
+    @Column(name = "email",
+            nullable = false,
+            columnDefinition = "TEXT",
+            unique = true
+    )
     private String email;
+
     private LocalDate dob = LocalDate.now();
+
     @Transient
     private Integer age;
 
-    public Student() {
+    public Student(String firstName, String email, String dob, Integer age) {
+        this.name = firstName;
+        this.email = email;
+//        this.dob = dob;
+        this.age = age;
     }
-
 
     public Student(Long id, String name, String email, LocalDate dob) {
         this.id = id;
@@ -37,6 +56,17 @@ public class Student {
         this.name = name;
         this.email = email;
         this.dob = dob;
+    }
+
+    public Student(Long studentIdStr, String firstName, String email, Integer age) {
+        this.id = studentIdStr;
+        this.name = firstName;
+        this.email = email;
+        this.age = age;
+    }
+
+    public Student() {
+
     }
 
     public Long getId() {
