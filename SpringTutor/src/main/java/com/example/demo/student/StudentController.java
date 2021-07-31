@@ -1,27 +1,39 @@
 package com.example.demo.student;
 
+import com.example.demo.exception.ApiRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "v1/student")
+@RequestMapping(path = "v1/student2")
 public class StudentController {
     private final StudentService studentService;
+    private final StudentDataAccessService studentDataAccessService;
+
+
 
     @Autowired
-    public StudentController(StudentService studentService) {
+    public StudentController(StudentService studentService, StudentDataAccessService studentDataAccessService) {
         this.studentService = studentService;
+        this.studentDataAccessService = studentDataAccessService;
     }
+
 
     @GetMapping
     public List<Student> getStudents() {
-        return studentService.getStudents();
+        return studentDataAccessService.selectAllStudents();
+    }
+    @GetMapping(path = "{studentId}/courses")
+    public List<StudentCourse> getCourseInfoAboutStudents(@PathVariable("studentId") Long id) {
+        return studentDataAccessService.getAllCoursesForStudent(id);
     }
 
     @PostMapping
-    public void registerNewStudent(@RequestBody Student student) {
+    public void addNewStudent(@RequestBody @Validated Student student) {
         studentService.addNewStudent(student);
     }
 

@@ -1,34 +1,40 @@
 package com.example.demo.student;
 
+import com.example.demo.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 public class StudentService {
 
     private final StudentRepository studentRepository;
+    private final EmailValidator emailValidator;
+    private StudentDataAccessService studentDataAccessService;
 
     @Autowired
-    public StudentService(StudentRepository studentRepository) {
+    public StudentService(StudentRepository studentRepository, EmailValidator emailValidator, StudentDataAccessService studentDataAccessService) {
         this.studentRepository = studentRepository;
+        this.emailValidator = emailValidator;
+        this.studentDataAccessService = studentDataAccessService;
     }
 
-    public List<Student> getStudents() {
-        return studentRepository.findAll();
-    }
+//    public List<Student> getStudents() {
+//        throw new IllegalStateException("Oops illegal exception in STUDENT_SERVICE");
+////        return studentRepository.findAll();
+//    }
 
     public void addNewStudent(Student student) {
         Optional<Student> studentOptional = studentRepository.findStudentByEmail(student.getEmail());
         if (studentOptional.isPresent()) {
             throw new IllegalStateException("email is taken");
+        } else if(!emailValidator.test(student.getEmail())){
+            throw new IllegalStateException("email is not valid");
         }
         studentRepository.save(student);
+//        studentDataAccessService.insertStudent(student);
     }
 
     public void deleteUserById(Long studentId) {
@@ -54,9 +60,10 @@ public class StudentService {
             } else {
                 throw new IllegalStateException("Inappropriate  name");
             }
-            Pattern pattern = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
-            Matcher matcher = pattern.matcher(newEmail);
-            if (matcher.matches()) {
+//            Pattern pattern = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
+//            Matcher matcher = pattern.matcher(newEmail);
+//            if (matcher.matches()) {
+            if (emailValidator.test(newEmail)) {
                 Optional<Student> studentOptional = studentRepository.findStudentByEmail(newEmail);
                 if (studentOptional.isPresent()) {
                     throw new IllegalStateException("Email is taken");
@@ -64,7 +71,7 @@ public class StudentService {
                     student.setEmail(newEmail);
                 }
             } else {
-                throw new IllegalStateException("Inappropriate  email");
+                throw new IllegalStateException(newEmail + "is inappropriate email");
             }
         }
     }

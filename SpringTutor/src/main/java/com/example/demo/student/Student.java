@@ -1,56 +1,44 @@
 package com.example.demo.student;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.Period;
 
 import static javax.persistence.GenerationType.SEQUENCE;
 
-@Table (name = "Student")
+@Table(name = "Student")
 @Entity
 public class Student {
     @Id
     @SequenceGenerator(
             name = "student_sequence",
             sequenceName = "student_sequence",
+            initialValue=32,
             allocationSize = 1)
     @GeneratedValue(
             strategy = SEQUENCE,
             generator = "student_sequence")
     private Long id;
 
-    @Column(name = "name",
+    @Column(name = "firstName",
             nullable = false,
             columnDefinition = "TEXT",
-            unique = true
-    )
+            unique = true)
     private String name;
 
     @Column(name = "email",
             nullable = false,
             columnDefinition = "TEXT",
-            unique = true
-    )
+            unique = true)
     private String email;
 
     private LocalDate dob = LocalDate.now();
 
     @Transient
+    @Column(name = "age",
+            columnDefinition = "TEXT")
     private Integer age;
-
-    public Student(String firstName, String email, String dob, Integer age) {
-        this.name = firstName;
-        this.email = email;
-//        this.dob = dob;
-        this.age = age;
-    }
-
-    public Student(Long id, String name, String email, LocalDate dob) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.dob = dob;
-    }
 
     public Student(String name, String email, LocalDate dob) {
         this.name = name;
@@ -58,7 +46,7 @@ public class Student {
         this.dob = dob;
     }
 
-    public Student(Long studentIdStr, String firstName, String email, Integer age) {
+    public Student(@JsonProperty("student_sequence") Long studentIdStr, @JsonProperty("firstName") String firstName, @JsonProperty("email") String email, @JsonProperty("age") Integer age) {
         this.id = studentIdStr;
         this.name = firstName;
         this.email = email;
@@ -102,7 +90,7 @@ public class Student {
     }
 
     public Integer getAge() {
-        return Period.between(this.dob, LocalDate.now()).getYears();
+        return age;
     }
 
     public void setAge(Integer age) {

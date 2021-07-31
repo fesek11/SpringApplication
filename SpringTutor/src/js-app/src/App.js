@@ -4,13 +4,9 @@ import Footer from "./Footer";
 import './App.css';
 import {getAllStudents} from './client';
 import AddStudentForm from './forms/AddStudentForm';
-import {
-    Avatar,
-    Table,
-    Spin,
-    Modal
-} from 'antd';
+import {Avatar, Empty, Modal, Spin, Table} from 'antd';
 import {LoadingOutlined} from '@ant-design/icons';
+import {errorNotification} from "./Notification";
 
 const getIndicatorIcon = () => <LoadingOutlined style={{fontSize: 24}} spin/>;
 
@@ -42,11 +38,46 @@ class App extends Component {
                         students,
                         isFetching: false
                     });
-                }));
+                }))
+            .catch(error => {
+                console.log(error.error);
+                const message = error.error.message;
+                const description = error.errors.error;
+                errorNotification(message, description)
+                this.setState({
+                    isFetching: false
+                });
+            });
     }
 
     render() {
         const {students, isFetching, isAddStudentModalVisible} = this.state;
+        const commonElements = () => (
+            <div>
+                <Modal
+                    title="Add new student"
+                    visible={isAddStudentModalVisible}
+                    onOk={this.closeAddStudentModal}
+                    onCancel={this.closeAddStudentModal}
+                    width={600}>
+                    <AddStudentForm
+                        onSuccess={() => {
+                            this.closeAddStudentModal();
+                            this.fetchStudents();
+                        }}
+                        onFailure={(error) => {
+                            const message = error.error.message;
+                            const description = error.error.error;
+                            errorNotification(message, description);
+                        }}
+
+                    />
+                </Modal>
+                <Footer
+                    numberOfStudents={students.length}
+                    handleAddStudentClickEvent={this.openAddStudentModal}/>
+            </div>
+        );
 
         if (isFetching) {
             return (
@@ -56,6 +87,7 @@ class App extends Component {
             );
         }
         if (students && students.length) {
+
             const columns = [
                 {
                     title: '',
@@ -91,26 +123,24 @@ class App extends Component {
             return (
                 <Container>
                     <Table
+                        style={{marginBottom: '100px'}}
                         dataSource={students}
                         columns={columns}
                         pagination={false}
                         rowKey='id'/>
-                    <Modal
-                        title="Add new student"
-                        visible={isAddStudentModalVisible}
-                        onOk={this.closeAddStudentModal}
-                        onCancel={this.closeAddStudentModal}
-                        width={600}>
-                         <AddStudentForm/>
-                    </Modal>
-                    <Footer
-                        numberOfStudents={students.length}
-                        handleAddStudentClickEvent={this.openAddStudentModal}/>
+                    {commonElements()}
                 </Container>
             );
         }
 
-        return <h1>No Students found </h1>;
+        return (
+            <Container>
+            <Empty description={
+            <h1>No Students Found</h1>
+            }/>
+            {commonElements()}
+        </Container>
+        )
     }
 }
 

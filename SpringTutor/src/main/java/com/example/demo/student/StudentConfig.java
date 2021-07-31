@@ -1,9 +1,6 @@
 package com.example.demo.student;
 
-import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,9 +10,9 @@ import java.util.List;
 import static java.time.Month.JANUARY;
 import static java.time.Month.OCTOBER;
 
-@Configuration
+//@Configuration
 public class StudentConfig {
-    @Bean
+//    @Bean
     CommandLineRunner commandLineRunner(StudentRepository studentRepository) {
         return args -> {
             Student den = new Student(
